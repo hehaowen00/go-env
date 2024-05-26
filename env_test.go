@@ -2,6 +2,7 @@ package go_env_test
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 
 	go_env "github.com/hehaowen00/go-env"
@@ -12,6 +13,7 @@ type Config struct {
 	B string  `env:"B,default:hello, world!"`
 	C bool    `env:"C,default:false"`
 	D float32 `env:"D,default:3.14"`
+	E []byte  `env:"E,default:aGVsbG8gd29ybGQ="`
 }
 
 func TestEnv1(t *testing.T) {
@@ -33,6 +35,10 @@ func TestEnv1(t *testing.T) {
 	}
 
 	if config.D != 3.14 {
+		t.FailNow()
+	}
+
+	if !slices.Equal(config.E, []byte("hello world")) {
 		t.FailNow()
 	}
 

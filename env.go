@@ -1,6 +1,7 @@
 package go_env
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"log"
@@ -107,6 +108,13 @@ func Load[T any]() (*T, error) {
 			v.FieldByIndex([]int{i}).SetFloat(r)
 		case reflect.String:
 			v.FieldByIndex([]int{i}).SetString(value)
+		case reflect.SliceOf(reflect.TypeFor[uint8]()).Kind():
+			data, err := base64.StdEncoding.DecodeString(value)
+			if err != nil {
+				return nil, err
+			}
+
+			v.FieldByIndex([]int{i}).SetBytes(data)
 		default:
 			return nil, fmt.Errorf("error unsupported type - %s", kind.String())
 		}
