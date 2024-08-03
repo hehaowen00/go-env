@@ -13,6 +13,36 @@ import (
 
 var ErrIsNotStruct = errors.New("type is not struct")
 
+func LoadFile[T any](path string) (*T, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	lines := strings.Split(string(data), "\n")
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "//") {
+			continue
+		}
+
+		parts := strings.Split(line, "=")
+		if len(parts) != 2 {
+			continue
+		}
+
+		key := parts[0]
+		value := parts[1]
+
+		err := os.Setenv(key, value)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return Load[T]()
+}
+
 func Load[T any]() (*T, error) {
 	var dest T
 
