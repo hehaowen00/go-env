@@ -34,7 +34,7 @@ func LoadFile[T any](path string) (*T, error) {
 		key := parts[0]
 		value := parts[1]
 
-		err := os.Setenv(key, value)
+		err := os.Setenv(strings.TrimSpace(key), strings.TrimSpace(value))
 		if err != nil {
 			return nil, err
 		}
